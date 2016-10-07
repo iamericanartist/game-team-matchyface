@@ -48,6 +48,14 @@ const Game = mongoose.model('game', {
   successfulMatches: {
     type: Number,
     default: 0
+  },
+  player: {
+    type: Boolean,
+    default: true
+  },
+  gameOver: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -140,22 +148,49 @@ mongoose.connect(MONGODB_URL, () => {
 const takeGuess = ( row, col, socket ) => {
   Game.findById(socket.gameId)
     .then(game => {
+      if(game.gameOver) {
+        return console.log('game is over')
+      }
       selectedArray.push(game.boardKey[row][col])
       game.visibleBoard[row][col] = game.boardKey[row][col]
       game.markModified('visibleBoard')
       game.save()
+      console.log('points: ', game.successfulMatches)
       socket.emit('guess complete', game)
       if ( !!selectedArray[1] ) {
         reviewMatch(game, selectedArray)
+        checkGameOver(game, socket)
         selectedArray = []
       }
     })
+}
+
+const checkGameOver = ( game, socket ) => {
+  // console.log('hella game check', game)
+  if( game.successfulMatches === 8 ) {
+    console.log('game over', game)
+    socket.emit('game over', game)
+    killGame(game)
+    return
+  }
+  console.log('no win', game)
+  return 
+}
+
+const killGame = game => {
+  console.log('kill the game')
+  Game.findById(game._id)
+  .then(game => {
+    console.log('killed game', game)
+  })
 }
 
 const reviewMatch = ( game, selected ) => {
   if(checkMatch(selected)) {
     game.solvedBoard = game.visibleBoard;
     game.successfulMatches++
+    console.log('points: ', game.successfulMatches)
+
     game.save() 
   } else {
     game.visibleBoard = game.solvedBoard
