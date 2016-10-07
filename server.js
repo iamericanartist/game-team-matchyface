@@ -72,17 +72,42 @@ app.get('/game/list', (req, res) => {
   .then(games => res.render('list', { games }))
 })
 
+
 app.get('/game/create', (req, res) => {
   Game.create({
-    boardKey: [['1', '2', '3', '4'],
-      ['8', '7', '6', '5'],
-      ['2', '1', '4', '3'],
-      ['8', '7', '6', '5']]
+    boardKey: rebuildArray()
   })
   .then(game => res.redirect(`/game/${game._id}`))
   .catch( console.error)
   // res.render('game')
 })
+
+
+
+function rebuildArray(boardKey) {
+  boardKey = [
+   '1', '2', '3', '4',
+   '8', '7', '6', '5',
+   '2', '1', '4', '3',
+   '8', '7', '6', '5'
+      ]
+    let newArray = []
+      for (var i = boardKey.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = boardKey[i];
+        boardKey[i] = boardKey[j];
+        boardKey[j] = temp;
+    }
+      var i,j,temparray,chunk = 4;
+      for (i=0,j=boardKey.length; i<j; i+=chunk) {
+      temparray = boardKey.slice(i,i+chunk);
+      newArray.push(temparray)
+    console.log('temparray', temparray);
+}
+return newArray
+}
+rebuildArray()
+
 
 app.get('/game/:gameId', (req, res) => {
   Game.findById(req.params.gameId)

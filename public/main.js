@@ -37,6 +37,8 @@ const buildBoard = thisBoard => {
   `
 }
 
+
+
 const buildPoints = pointCount => {
   points.innerHTML = `points: ${pointCount}`
 }
