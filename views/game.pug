@@ -6,6 +6,8 @@ html
   body
     h1 Matchy McMatcherson P.I.
     h3 A Matching Game Duh: The Game
+    if game.gameOver
+        p game over
     .points
     .board
     script(src="/socket.io/socket.io.js")

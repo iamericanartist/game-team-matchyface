@@ -39,8 +39,11 @@ const buildBoard = thisBoard => {
 
 const buildPoints = pointCount => {
   points.innerHTML = `points: ${pointCount}`
-  // 
-  // 
+}
+
+const endGame = game => {
+  points.innerHTML += 'game over'
+  // game.gameOver = true
 }
 
 const buildPage = ({ visibleBoard, successfulMatches }) => {
@@ -58,6 +61,7 @@ board.addEventListener('click', evt => {
 socket.on('connect', () => console.log(`Socket connected: ${socket.id}`))
 socket.on('disconnect', () => console.log('Socket disconnected'))
 socket.on('error', console.error)
+socket.on('game over', game => endGame(game))
 socket.on('guess complete',  game => buildPage(game))
 socket.on('new game', game => buildPage(game))
 
