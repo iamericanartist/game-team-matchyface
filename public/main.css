@@ -9,3 +9,17 @@ td {
   text-align: center;
   font-size: 40px;
 }
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
