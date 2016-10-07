@@ -19,12 +19,7 @@ const Game = mongoose.model('game', {
       [ String, String, String, String],
       [ String, String, String, String],
       [ String, String, String, String]
-    ],
-    default: 
-      [['1', '2', '3', '4'],
-      ['8', '7', '6', '5'],
-      ['2', '1', '4', '3'],
-      ['8', '7', '6', '5']]
+    ]
   },
   solvedBoard: { type: [
       [ String, String, String, String],
@@ -60,10 +55,11 @@ app.set('view engine', 'pug')
 
 app.use(express.static('public'))
 
+// // // *** ROUTING *** // // //
+
 app.get('/', (req, res) => res.render('index'))
 
 app.get('/game/list', (req, res) => {
-  // res.render('list')
   Game.find()
   .then(games => res.render('list', { games }))
 })
@@ -73,8 +69,7 @@ app.get('/game/create', (req, res) => {
     boardKey: [['1', '2', '3', '4'],
       ['8', '7', '6', '5'],
       ['2', '1', '4', '3'],
-      ['8', '7', '6', '5']],
-    successfulMatches: 0
+      ['8', '7', '6', '5']]
   })
   .then(game => res.redirect(`/game/${game._id}`))
   .catch( console.error)
@@ -86,8 +81,9 @@ app.get('/game/:gameId', (req, res) => {
   .then(game => res.render('game', { game }))
 })
 
-
 let selectedArray = []
+
+// // // *** SOCKET.IO *** // // //
 
 io.on('connect', socket => {
   console.log(`Socket connected: ${socket.id}`)
@@ -105,25 +101,7 @@ io.on('connect', socket => {
     console.error(err)
   })
 
-  socket.on('guess made', ({ row, col }) => {
-    // console.log('guess object', guessObject)
-    // console.log('socket game id: ', socket.gameId)
-    Game.findById(socket.gameId)
-    .then(game => {
-      // console.log('game: ', game)
-      selectedArray.push(game.boardKey[row][col])
-      game.visibleBoard[row][col] = game.boardKey[row][col]
-      game.markModified('visibleBoard')
-      game.save()
-      // console.log('selectedArray', selectedArray)
-      socket.emit('guess complete', game)
-      if ( !!selectedArray[1] ) {
-        takeGuess(game, selectedArray)
-        selectedArray = []
-      }
-    })
-  })
-
+  socket.on('guess made', ({ row, col }) => takeGuess(row, col, socket))
   socket.on('disconnect', () => console.log(`Socket disconnected: ${socket.id}`))
 })
 
@@ -132,7 +110,24 @@ mongoose.connect(MONGODB_URL, () => {
   server.listen(PORT, () => console.log(`Server listening on port: ${PORT}`))
 })
 
-const takeGuess = ( game, selected ) => {
+// // // *** FUNCTIONS *** // // //
+
+const takeGuess = ( row, col, socket ) => {
+  Game.findById(socket.gameId)
+    .then(game => {
+      selectedArray.push(game.boardKey[row][col])
+      game.visibleBoard[row][col] = game.boardKey[row][col]
+      game.markModified('visibleBoard')
+      game.save()
+      socket.emit('guess complete', game)
+      if ( !!selectedArray[1] ) {
+        reviewMatch(game, selectedArray)
+        selectedArray = []
+      }
+    })
+}
+
+const reviewMatch = ( game, selected ) => {
   if(checkMatch(selected)) {
     game.solvedBoard = game.visibleBoard;
     game.successfulMatches++

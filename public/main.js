@@ -60,3 +60,18 @@ socket.on('disconnect', () => console.log('Socket disconnected'))
 socket.on('error', console.error)
 socket.on('guess complete',  game => buildPage(game))
 socket.on('new game', game => buildPage(game))
+
+// // // TO DO // // //
+
+// end game when all matches complete 
+// // 'congrats player X wins'
+// // // could store 'currentPlayer' on game object
+// // // switch on match failure
+
+// make multiplayer logic ( take turns upon match failure )
+// // joinable by sharing link or by waiting
+
+// randomly generate boardKey upon creation
+// // can be from array or other pre-populated
+// // for non number values
+// // // ( image matching, etc )
