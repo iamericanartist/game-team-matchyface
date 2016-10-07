@@ -116,6 +116,7 @@ app.get('/game/:gameId', (req, res) => {
 
 let selectedArray = []
 
+
 // // // *** SOCKET.IO *** // // //
 
 io.on('connect', socket => {
