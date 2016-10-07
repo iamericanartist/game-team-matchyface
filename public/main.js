@@ -67,6 +67,8 @@ socket.on('game over', game => endGame(game))
 socket.on('guess complete',  game => buildPage(game))
 socket.on('new game', game => buildPage(game))
 
+
+
 // // // TO DO // // //
 
 // end game when all matches complete 
@@ -75,6 +77,11 @@ socket.on('new game', game => buildPage(game))
 // // // switch on match failure
 
 // make multiplayer logic ( take turns upon match failure )
+  // two point counters
+  
+  // boolean player 1 true otherwise false
+
+
 // // joinable by sharing link or by waiting
 
 // randomly generate boardKey upon creation

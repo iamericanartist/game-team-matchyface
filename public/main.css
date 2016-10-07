@@ -8,6 +8,7 @@ td {
   height: 100px;
   text-align: center;
   font-size: 40px;
+  text-shadow: 1px,1px,5px, black;
 }
 html, body {
     height: 100%;
@@ -22,4 +23,26 @@ body {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
+}
+
+
+table {
+  border-collapse: collapse;
+  margin: auto;
+}
+
+
+tr:nth-child(even) {
+  background: rgba(200, 240, 200, .6);
+}
+td:nth-child(even) {
+  background: rgba(240, 200, 200, .6);
+}
+
+td:hover {
+  background: rgba(120, 220, 120, 0.7);
+}
+
+tbody {
+  background-color: rgba(100, 100, 100, 0.5);
 }

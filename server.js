@@ -49,10 +49,7 @@ const Game = mongoose.model('game', {
     type: Number,
     default: 0
   },
-  player: {
-    type: Boolean,
-    default: true
-  },
+  toMove: String,
   gameOver: {
     type: Boolean,
     default: false
@@ -73,16 +70,33 @@ app.get('/game/list', (req, res) => {
 })
 
 
+/////////////////////////////  FINAL ARRAY BUILDER  /////////////////////////////
 app.get('/game/create', (req, res) => {
   Game.create({
-    boardKey: rebuildArray()
+    boardKey: rebuildArray(),
+    toMove: 'player1',
   })
   .then(game => res.redirect(`/game/${game._id}`))
   .catch( console.error)
   // res.render('game')
 })
 
-
+//////////////////////////////  TESTER KNOWN ARRAY /////////////////////////////
+//////////////////////////////////  DELETE ME ///////////////////////////////////
+// app.get('/game/create', (req, res) => {
+//   Game.create({
+//     boardKey: [
+//       ['1', '2', '3', '4'],
+//       ['1', '2', '3', '4'],
+//       ['8', '7', '6', '5'],
+//       ['8', '7', '6', '5']
+//    ],
+//     toMove: 'player1',
+//   })
+//   .then(game => res.redirect(`/game/${game._id}`))
+//   .catch( console.error)
+//   // res.render('game')
+// })
 
 function rebuildArray(boardKey) {
   boardKey = [
@@ -155,6 +169,7 @@ const takeGuess = ( row, col, socket ) => {
       selectedArray.push(game.boardKey[row][col])
       game.visibleBoard[row][col] = game.boardKey[row][col]
       game.markModified('visibleBoard')
+      toggleNextMove(game)
       game.save()
       console.log('points: ', game.successfulMatches)
       socket.emit('guess complete', game)
@@ -165,6 +180,30 @@ const takeGuess = ( row, col, socket ) => {
       }
     })
 }
+
+
+const setMove = (game, move) => {
+  game.board[move.row][move.col] = game.toMove
+  game.markModified('board') // trigger mongoose change detection
+  return game
+}
+const toggleNextMove = game => {
+  console.log("PreMove Player Turn?", game.toMove)
+  game.toMove = game.toMove === 'player1' ? 'player2' : 'player1'
+  console.log("PostMove Player Turn?", game.toMove)
+  return game
+}
+const setResult = game => {
+  const result = winner(game.board)
+
+  if (result) {
+    game.toMove = undefined // mongoose equivalent to: `delete socket.game.toMove`
+    game.result = result
+  }
+
+  return game
+}
+
 
 const checkGameOver = ( game, socket ) => {
   // console.log('hella game check', game)
