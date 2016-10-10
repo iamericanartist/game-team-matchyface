@@ -39,8 +39,8 @@ const buildBoard = thisBoard => {
 
 
 
-const buildPoints = pointCount => {
-  points.innerHTML = `points: ${pointCount}`
+const buildPoints = ( player1Points, player2Points ) => {
+  points.innerHTML = `player 1 points: ${player1Points} | player 2 points: ${player2Points}`
 }
 
 const endGame = game => {
@@ -48,9 +48,9 @@ const endGame = game => {
   // game.gameOver = true
 }
 
-const buildPage = ({ visibleBoard, successfulMatches }) => {
+const buildPage = ({ visibleBoard, player1Points, player2Points }) => {
   buildBoard(visibleBoard)
-  buildPoints(successfulMatches)
+  buildPoints(player1Points, player2Points)
 }
 
 board.addEventListener('click', evt => {
@@ -75,9 +75,3 @@ socket.on('new game', game => buildPage(game))
 // // // switch on match failure
 
 // make multiplayer logic ( take turns upon match failure )
-// // joinable by sharing link or by waiting
-
-// randomly generate boardKey upon creation
-// // can be from array or other pre-populated
-// // for non number values
-// // // ( image matching, etc )
