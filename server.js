@@ -76,6 +76,7 @@ app.get('/game/list', (req, res) => {
 app.get('/game/create', (req, res) => {
   Game.create({
     boardKey: rebuildArray()
+    // boardKey: []
   })
   .then(game => res.redirect(`/game/${game._id}`))
   .catch( console.error)
