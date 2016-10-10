@@ -86,51 +86,25 @@ app.get('/game/list', (req, res) => {
 
 
 /////////////////////////////  FINAL ARRAY BUILDER  /////////////////////////////
-// app.get('/game/create', (req, res) => {
-//   Game.create({
-//     boardKey: rebuildArray()
-//   })
-//   .then(game => res.redirect(`/game/${game._id}`))
-//   .catch( console.error)
-//   // res.render('game')
-// })
-
-//////////////////////////////  TESTER KNOWN ARRAY /////////////////////////////
-//////////////////////////////////  DELETE ME ///////////////////////////////////
 app.get('/game/create', (req, res) => {
   Game.create({
-    boardKey: [
-      ['1', '2', '3', '4'],
-      ['1', '2', '3', '4'],
-      ['8', '7', '6', '5'],
-      ['8', '7', '6', '5']
-   ]
+    boardKey: rebuildArray()
   })
   .then(game => res.redirect(`/game/${game._id}`))
   .catch( console.error)
+  // res.render('game')
 })
+
+//////////////////////////////  TESTER KNOWN ARRAY /////////////////////////////
+
 
 function rebuildArray(boardKey) {
   boardKey = [
-      [
-        'https://media3.giphy.com/media/3o6ozAc3eCahwy4Cpq/200w.gif',
-        'https://media3.giphy.com/media/3o6ozAc3eCahwy4Cpq/200w.gif',
-        'https://media0.giphy.com/media/l3V0BhVJePw5TUQM0/200w.gif',
-        'https://media0.giphy.com/media/l3V0BhVJePw5TUQM0/200w.gif',
-        'https://media2.giphy.com/media/l3V0tEzAQrbG7CQow/200w.gif',
-        'https://media2.giphy.com/media/l3V0tEzAQrbG7CQow/200w.gif',
-        'https://media3.giphy.com/media/26BRKiG93KBy6YEVi/200w.gif',
-        'https://media3.giphy.com/media/26BRKiG93KBy6YEVi/200w.gif',
-        'https://media3.giphy.com/media/kDPKWKd94vxte/200w.gif',
-        'https://media3.giphy.com/media/kDPKWKd94vxte/200w.gif',
-        'https://media4.giphy.com/media/4My4Bdf4cakLu/200w.gif',
-        'https://media4.giphy.com/media/4My4Bdf4cakLu/200w.gif',
-        'https://media4.giphy.com/media/l2Jee9PbOyBst1ihi/200.gif',
-        'https://media4.giphy.com/media/l2Jee9PbOyBst1ihi/200.gif',
-        'https://media3.giphy.com/media/92kNacrDU7ene/200w.gif',
-        'https://media3.giphy.com/media/92kNacrDU7ene/200w.gif'
+   '1', '2', '3', '4',
+   '8', '7', '6', '5',
+   '2', '1', '4', '3',
+   '8', '7', '6', '5'
       ]
-    ]
     let newArray = []
       for (var i = boardKey.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -143,10 +117,10 @@ function rebuildArray(boardKey) {
       temparray = boardKey.slice(i,i+chunk);
       newArray.push(temparray)
     console.log('temparray', temparray);
-  }
-  return newArray
 }
-// rebuildArray()
+return newArray
+}
+rebuildArray()
 
 
 app.get('/game/:gameId', (req, res) => {
